@@ -1,24 +1,13 @@
 # sudoku
 
-## Project setup
-```
-npm install
-```
+## Learned
 
-### Compiles and hot-reloads for development
-```
-npm run serve
-```
+### Reactivity
+> [Reactivity in Depth](http://man.hubwiz.com/docset/VueJS.docset/Contents/Resources/Documents/vuejs.org/guide/reactivity.html)
+- Objects and Arrays require extra care for automatic change detection
+- Objects: **property addtion or deletion not detected**
+    - should initialize with all the required properties at `data`
+- Arrays: **mutation methods and replacements are detected**
+    - `test = [1, 2, 3]` in data and `this.test[0] = 4` in a method will not be detected
+    - `this.test = this.test.slice()` then `this.test[0] = 4` will be detected
 
-### Compiles and minifies for production
-```
-npm run build
-```
-
-### Lints and fixes files
-```
-npm run lint
-```
-
-### Customize configuration
-See [Configuration Reference](https://cli.vuejs.org/config/).
