@@ -14,6 +14,7 @@
 </template>
 
 <script>
+import _ from 'lodash'
 import GameInfo from '@/components/GameInfo.vue'
 import Board from '@/components/Board.vue'
 import NumberInput from '@/components/NumberInput.vue'
@@ -79,6 +80,7 @@ export default {
       // change selectedSquare to selectedNumber
       const r = Math.floor(this.selectedSquare / 9)
       const c = this.selectedSquare % 9
+      this.board = _.cloneDeep(this.board)
       this.board[r][c] = num
     }
   },

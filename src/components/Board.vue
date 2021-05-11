@@ -22,14 +22,14 @@ export default {
 
   props: {
     board: Array,
-    squareClasses: Object
+    squareClasses: Object,
   },
 
   methods: {
     onClickSquare: function (r, c) {
       this.$emit('square-click', [r, c])
     }
-  }
+  },
 }
 </script>
 
