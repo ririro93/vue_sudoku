@@ -7,8 +7,8 @@
       v-for="(square, c) in row" 
       :key="9*r + c"
       @click="onClickSquare(r, c)"
+      v-text="board[r][c]"
     >
-      {{ board[r][c] }}
     </div>
   </div>
 </div>
@@ -38,6 +38,7 @@ export default {
   width: 5vh;
   height: 5vh;
   line-height: 5vh;
+  font-size: 3vh;
   border: 1px solid lightgray;
 }
 

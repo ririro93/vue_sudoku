@@ -1,8 +1,7 @@
 <template>
   <div class="d-flex justify-content-center">
     <div 
-      class="number-btn" 
-      :class="numberClasses[num]"
+      class="btn btn-success number-btn" 
       v-for="num in numbers" 
       :key="num"
       @click="onNumberClick(num)"
@@ -20,10 +19,6 @@ for (let i=1; i < 10; i++) {
 
 export default {
   name: 'NumberInput',
-
-  props: {
-    numberClasses: Object
-  },
 
   data: function () {
     return {
@@ -47,5 +42,7 @@ export default {
   width: 7vh;
   height: 7vh;
   line-height: 7vh;
+  padding: 0;
+  font-size: 3vh;
 }
 </style>
