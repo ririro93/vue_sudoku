@@ -1,17 +1,29 @@
 <template>
   <div id="app">
-    <img alt="Vue logo" src="./assets/logo.png">
-    <HelloWorld msg="Welcome to Your Vue.js App"/>
+    <h1>Sudoku</h1>
+    <GameInfo @game-start="onGameStart" />
+    <Board />
   </div>
 </template>
 
 <script>
-import HelloWorld from './components/HelloWorld.vue'
+import GameInfo from '@/components/GameInfo.vue'
+import Board from '@/components/Board.vue'
+// import NumberInput from '@/components/NumberInput.vue'
 
 export default {
   name: 'App',
+
   components: {
-    HelloWorld
+    GameInfo,
+    Board,
+    // NumberInput
+  },
+
+  methods: {
+    onGameStart: function () {
+      console.log('Game Start from app')
+    }
   }
 }
 </script>
