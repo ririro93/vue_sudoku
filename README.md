@@ -12,3 +12,5 @@
     - `this.test = this.test.slice()` then `this.test[0] = 4` will be detected
     - lodash.cloneDeep() can be used for 2D Arrays
 
+### Matix
+> [transpose](https://gist.github.com/femto113/1784503)

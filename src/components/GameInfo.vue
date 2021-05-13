@@ -2,6 +2,7 @@
   <div>
     <div v-text="playTime"></div>
     <button class="btn btn-primary" @click="startGame">{{ gameButton }}</button>
+    <button class="btn btn-warning" @click="stopGame" v-if="interval">Stop Game</button>
   </div>
 </template>
 
@@ -30,7 +31,12 @@ export default {
 
       // Tell parent about new game
       this.$emit('game-start')
+    },
 
+    stopGame: function () {
+      clearInterval(this.interval)
+      this.playTime = '00:00'
+      this.interval = null
     }
   },
 

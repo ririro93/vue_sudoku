@@ -15,14 +15,27 @@
 
 <script>
 import _ from 'lodash'
+
 import GameInfo from '@/components/GameInfo.vue'
 import Board from '@/components/Board.vue'
 import NumberInput from '@/components/NumberInput.vue'
 
+// initializa andSeed
+const ansSeed = [
+  [4, 2, 6, 5, 7, 1, 3, 9, 8],
+  [8, 5, 7, 2, 9, 3, 1, 4, 6],
+  [1, 3, 9, 4, 6, 8, 2, 7, 5],
+  [9, 7, 1, 3, 8, 5, 6, 2, 4],
+  [5, 4, 3, 7, 2, 6, 8, 1, 9],
+  [6, 8, 2, 1, 4, 9, 7, 5, 3],
+  [7, 9, 4, 6, 3, 2, 5, 8, 1],
+  [2, 6, 5, 8, 1, 4, 9, 3, 7],
+  [3, 1, 8, 9, 5, 7, 4, 6, 5]
+]
+
+// initialize board
 const board = []
 const squareClasses = {}
-
-// initialize Board
 for (let i=0; i<9; i++) {
   let rows = []
   for (let j=0; j<9; j++) {
@@ -46,6 +59,7 @@ for (let i=0; i<9; i++) {
   board.push(rows)
 }
 
+
 export default {
   name: 'App',
 
@@ -58,6 +72,7 @@ export default {
   data: function () {
     return {
       // for Board
+      ansSeed,
       board,
       squareClasses,
       selectedSquare: 0,
@@ -66,7 +81,10 @@ export default {
 
   methods: {
     onGameStart: function () {
-      console.log('Game Start from app')
+      console.log('Game Start')
+
+      // make ansBoard from ansSeed
+      this.makeNewAnsBoard()
     },
 
     onSquareClick: function ([r, c]) {
@@ -82,6 +100,42 @@ export default {
       const c = this.selectedSquare % 9
       this.board = _.cloneDeep(this.board)
       this.board[r][c] = num
+    },
+
+    makeNewAnsBoard: function () {
+      // make new board from seed
+      console.log(ansSeed)
+      console.log('transposed', this.transpose(ansSeed))
+      console.log('switched', this.switchNumPos(ansSeed))
+
+      // choose # of shown squares taking into account difficulty
+
+      // choose shown squares
+    },
+
+    transpose: function (matrix) {
+      return matrix.reduce(($, row) => row.map((_, i) => [...($[i] || []), row[i]]), [])
+    },
+
+    switchNumPos: function (matrix) {
+      // choose 2 nums from 1 to 9
+      const [a, b] = _.sampleSize(Array.from(Array(9), (e, i)=>i+1), 2)
+
+      // create new matrix with a, b switched positions
+      const newMatrix = _.cloneDeep(matrix)
+
+      for (let i=0; i<9; i++) {
+        for (let j=0; j<9; j++) {
+          if (matrix[i][j] === a) {
+            newMatrix[i][j] = b
+          }
+          if (matrix[i][j] === b) {
+            newMatrix[i][j] = a
+          }
+        }
+      }
+      console.log(a, b)
+      return newMatrix
     }
   },
 }
