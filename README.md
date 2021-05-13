@@ -2,13 +2,14 @@
 > a toy project to get used to Vue
 
 ## Features
-- timer
-- 3 difficulties
-- many variations with just one seed matrix using a random mix of the following 
-    - transpose
-    - swap positions of 2 numbers
-    - rotate 90 degrees
-    - change 2 rows of same block
+- [x] timer
+- [x] 3 difficulties
+- [x] many variations with just one seed matrix using a random mix of the following 
+    - [x] transpose
+    - [x] swap positions of 2 numbers
+    - [x] rotate 90 degrees
+    - [x] change 2 rows of same block
+- [ ] keep personal bests in local storage
 
 ## Learned
 ### Vue Reactivity
