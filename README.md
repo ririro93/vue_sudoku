@@ -1,8 +1,17 @@
 # sudoku
+> a toy project to get used to Vue
+
+## Features
+- timer
+- 3 difficulties
+- many variations with just one seed matrix using a random mix of the following 
+    - transpose
+    - swap positions of 2 numbers
+    - rotate 90 degrees
+    - change 2 rows of same block
 
 ## Learned
-
-### Reactivity
+### Vue Reactivity
 > [Reactivity in Depth](http://man.hubwiz.com/docset/VueJS.docset/Contents/Resources/Documents/vuejs.org/guide/reactivity.html)
 - Objects and Arrays require extra care for automatic change detection
 - Objects: **property addtion or deletion not detected**
@@ -14,3 +23,7 @@
 
 ### Matix
 > [transpose](https://gist.github.com/femto113/1784503)
+
+### JS
+- can create arrays like creating lists in python using `list(range(N))`
+    - -> `Array.from(Array(N), (e, i)=>i)`
