@@ -53,4 +53,8 @@ export default {
 .selected {
   background-color: lightgray;
 }
+
+.answered {
+  color: #0019ffa3;
+}
 </style>

@@ -49,7 +49,8 @@ for (let i=0; i<9; i++) {
     squareClasses[squareId] = {
       'border-right': false,
       'border-bot': false,
-      'selected': false
+      'selected': false,
+      'answered': false,
     }
     rows.push('')
     if (i === 0 && j === 0) {
@@ -84,6 +85,7 @@ export default {
       squareClasses,
       selectedSquare: 0,
       difficulty: 'Easy',
+      squaresToReveal: []
     }
   },
 
@@ -91,23 +93,37 @@ export default {
     onGameStart: function () {
       console.log('Game Start')
 
+      // clean board
+      this.board = board
+
       // make ansBoard from ansSeed
       this.makeNewAnsBoard()
+
+      // choose fixed squares according to difficulty
+      this.chooseSquaresToReveal()
+
+      // reveal fixed squares on the board
+      this.revealChosenSquares()
     },
 
+    // Events
     onSquareClick: function ([r, c]) {
       // change selectedSquare
       this.squareClasses[this.selectedSquare]['selected'] = false
       this.selectedSquare = 9 * r + c
       this.squareClasses[this.selectedSquare]['selected'] = true
     },
-
     onNumberClick: function (num) {
       // change selectedSquare to selectedNumber
       const r = Math.floor(this.selectedSquare / 9)
       const c = this.selectedSquare % 9
-      this.board = _.cloneDeep(this.board)
-      this.board[r][c] = num
+
+      // check if fixed square
+      if (!this.squaresToReveal.includes(9*r + c)) {
+        this.board = _.cloneDeep(this.board)
+        this.board[r][c] = num
+        this.squareClasses[9*r + c].answered = true
+      }
     },
     onChangeDifficulty: function () {
       if (this.difficulty == 'Easy') {
@@ -119,8 +135,10 @@ export default {
       }
     },
 
+    // Game Initialization
     makeNewAnsBoard: function () {
       // make new board from seed
+      console.log('## initial board')
       console.log(this.ansBoard)
 
       // make 20 changes to seed answer board
@@ -141,9 +159,36 @@ export default {
             break
         }
       }
+      console.log('## changed board')
       console.log(this.ansBoard)
+    },
+    chooseSquaresToReveal: function () {
+      // Easy: 30, Medium: 25, Hard: 20
+      const candidateSquares = Array.from(Array(81), (e, i) => i)
+      let numOfSquaresToReveal
 
-      // choose shown squares
+      if (this.difficulty === 'Easy') {
+        numOfSquaresToReveal = 30
+      } else if (this.difficulty === 'Medium') {
+        numOfSquaresToReveal = 25
+      } else {
+        numOfSquaresToReveal = 20
+      }
+
+      const squaresToReveal = _.sampleSize(candidateSquares, numOfSquaresToReveal)
+      this.squaresToReveal = squaresToReveal
+    },
+    revealChosenSquares: function () {
+      const newBoard = _.cloneDeep(this.board)
+
+      for (let i=0; i<9; i++) {
+        for (let j=0; j<9; j++) {
+          if (this.squaresToReveal.includes(9*i + j)) {
+            newBoard[i][j] = this.ansBoard[i][j]
+          }
+        }
+      }
+      this.board = newBoard
     },
 
     // Matrix transformations
