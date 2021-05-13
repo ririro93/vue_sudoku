@@ -115,6 +115,7 @@ export default {
     },
     onGameStop: function () {
       this.board = board
+      this.gameStopMessage = ''
       this.onSquareClick([0, 0])
     },
     onGameSubmit: function (playTime) {
