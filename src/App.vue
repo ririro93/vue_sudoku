@@ -3,7 +3,10 @@
     <h1 class="fw-bold">Sudoku</h1>
     <GameInfo 
       :difficulty="difficulty"
+      :gameStopMessage="gameStopMessage"
       @game-start="onGameStart" 
+      @game-stop="onGameStop"
+      @game-submit="onGameSubmit"
       @change-difficulty="onChangeDifficulty"
     />
     <DifficultyInput />
@@ -15,6 +18,7 @@
     <NumberInput 
       @number-click="onNumberClick"
     />
+  
   </div>
 </template>
 
@@ -26,7 +30,7 @@ import DifficultyInput from '@/components/DifficultyInput'
 import Board from '@/components/Board.vue'
 import NumberInput from '@/components/NumberInput.vue'
 
-// initialize ansSeed -> make more seeds in the future
+// initialize ansSeed -> add more seeds later?
 const ansSeed = [
   [4, 2, 6, 5, 7, 1, 3, 9, 8],
   [8, 5, 7, 2, 9, 3, 1, 4, 6],
@@ -80,21 +84,25 @@ export default {
   data: function () {
     return {
       // for Board
-      ansBoard: ansSeed,
-      board,
-      squareClasses,
+      ansBoard: _.cloneDeep(ansSeed),
+      board: _.cloneDeep(board),
+      squareClasses: _.cloneDeep(squareClasses),
       selectedSquare: 0,
       difficulty: 'Easy',
-      squaresToReveal: []
+      squaresToReveal: [],
+      gameStopMessage: ''
     }
   },
 
   methods: {
+    // Events
     onGameStart: function () {
       console.log('Game Start')
 
-      // clean board
-      this.board = board
+      // reset all
+      this.board = _.cloneDeep(board)
+      this.squareClasses = _.cloneDeep(squareClasses)
+      this.gameStopMessage = ''
 
       // make ansBoard from ansSeed
       this.makeNewAnsBoard()
@@ -105,8 +113,29 @@ export default {
       // reveal fixed squares on the board
       this.revealChosenSquares()
     },
-
-    // Events
+    onGameStop: function () {
+      this.board = board
+      this.onSquareClick([0, 0])
+    },
+    onGameSubmit: function (playTime) {
+      let wrongSubmit = false
+      for (let i=0; i<9; i++) {
+        for (let j=0; j<9; j++) {
+          if (this.ansBoard[i][j] != this.board[i][j]) {
+            wrongSubmit = true
+            break
+          }
+        }
+        if (wrongSubmit) {
+          this.gameStopMessage = 'Wrong Answer'
+          break
+        }
+      }
+      if (!wrongSubmit) {
+        this.gameStopMessage = `Congratulations! You completed ${this.difficulty} in ${playTime}`
+        // this.setRecord(playTime)
+      }
+    },
     onSquareClick: function ([r, c]) {
       // change selectedSquare
       this.squareClasses[this.selectedSquare]['selected'] = false
@@ -168,7 +197,7 @@ export default {
       let numOfSquaresToReveal
 
       if (this.difficulty === 'Easy') {
-        numOfSquaresToReveal = 30
+        numOfSquaresToReveal = 80
       } else if (this.difficulty === 'Medium') {
         numOfSquaresToReveal = 25
       } else {

@@ -1,12 +1,16 @@
 <template>
+<div>
   <div class="container d-flex justify-content-between">
     <div>
       <button class="btn btn-secondary me-3" :class="difficultyClass" @click="changeDifficulty">{{ difficulty }}</button>
       <button class="btn btn-primary me-3" @click="startGame">{{ gameButton }}</button>
-      <button class="btn btn-warning" @click="stopGame" v-if="interval">Stop Game</button>
+      <button class="btn btn-warning me-3" @click="stopGame" v-if="interval">Stop Game</button>
+      <button class="btn btn-success" @click="submitGame" v-if="interval">Submit Game</button>
     </div>
     <div class="d-inline" v-text="playTime"></div>
   </div>
+  <h2 v-text="gameStopMessage"></h2>
+</div>
 </template>
 
 <script>
@@ -15,6 +19,7 @@ export default {
 
   props: {
     difficulty: String,
+    gameStopMessage: String,
   },
   
   data: function () {
@@ -44,6 +49,11 @@ export default {
       clearInterval(this.interval)
       this.playTime = '00:00'
       this.interval = null
+      this.$emit('game-stop')
+    },
+
+    submitGame: function () {
+      this.$emit('game-submit', this.playTime)
     },
 
     changeDifficulty: function () {
@@ -74,9 +84,18 @@ export default {
         result['btn-danger'] = true
       }
       return result
+    },
+  },
+
+  watch: {
+    gameStopMessage: function () {
+      if (this.gameStopMessage != '' && this.gameStopMessage != 'Wrong Answer') {
+        clearInterval(this.interval)
+        this.playTime = '00:00'
+        this.interval = null
+      }
     }
   }
-
 }
 </script>
 
