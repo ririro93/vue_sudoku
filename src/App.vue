@@ -1,7 +1,12 @@
 <template>
   <div id="app">
-    <h1>Sudoku</h1>
-    <GameInfo @game-start="onGameStart" />
+    <h1 class="fw-bold">Sudoku</h1>
+    <GameInfo 
+      :difficulty="difficulty"
+      @game-start="onGameStart" 
+      @change-difficulty="onChangeDifficulty"
+    />
+    <DifficultyInput />
     <Board 
       :board="board"
       :squareClasses="squareClasses"
@@ -17,10 +22,11 @@
 import _ from 'lodash'
 
 import GameInfo from '@/components/GameInfo.vue'
+import DifficultyInput from '@/components/DifficultyInput'
 import Board from '@/components/Board.vue'
 import NumberInput from '@/components/NumberInput.vue'
 
-// initializa andSeed
+// initialize ansSeed -> make more seeds in the future
 const ansSeed = [
   [4, 2, 6, 5, 7, 1, 3, 9, 8],
   [8, 5, 7, 2, 9, 3, 1, 4, 6],
@@ -30,7 +36,7 @@ const ansSeed = [
   [6, 8, 2, 1, 4, 9, 7, 5, 3],
   [7, 9, 4, 6, 3, 2, 5, 8, 1],
   [2, 6, 5, 8, 1, 4, 9, 3, 7],
-  [3, 1, 8, 9, 5, 7, 4, 6, 5]
+  [3, 1, 8, 9, 5, 7, 4, 6, 2]
 ]
 
 // initialize board
@@ -65,6 +71,7 @@ export default {
 
   components: {
     GameInfo,
+    DifficultyInput,
     Board,
     NumberInput
   },
@@ -72,10 +79,11 @@ export default {
   data: function () {
     return {
       // for Board
-      ansSeed,
+      ansBoard: ansSeed,
       board,
       squareClasses,
       selectedSquare: 0,
+      difficulty: 'Easy',
     }
   },
 
@@ -101,41 +109,90 @@ export default {
       this.board = _.cloneDeep(this.board)
       this.board[r][c] = num
     },
+    onChangeDifficulty: function () {
+      if (this.difficulty == 'Easy') {
+        this.difficulty = 'Medium'
+      } else if (this.difficulty == 'Medium') {
+        this.difficulty = 'Hard'
+      } else {
+        this.difficulty = 'Easy'
+      }
+    },
 
     makeNewAnsBoard: function () {
       // make new board from seed
-      console.log(ansSeed)
-      console.log('transposed', this.transpose(ansSeed))
-      console.log('switched', this.switchNumPos(ansSeed))
+      console.log(this.ansBoard)
 
-      // choose # of shown squares taking into account difficulty
+      // make 20 changes to seed answer board
+      for (let cnt=0; cnt<20; cnt++) {
+        const change = _.sample([1, 2, 3, 4])
+        switch (change) {
+          case 1:
+            this.transpose()
+            break
+          case 2:
+            this.swapNumPos()
+            break
+          case 3:
+            this.rotateClockwise()
+            break
+          case 4:
+            this.switchRowsInBlock()
+            break
+        }
+      }
+      console.log(this.ansBoard)
 
       // choose shown squares
     },
 
-    transpose: function (matrix) {
-      return matrix.reduce(($, row) => row.map((_, i) => [...($[i] || []), row[i]]), [])
+    // Matrix transformations
+    transpose: function () {
+      console.log('transpose matrix')
+      this.ansBoard = this.ansBoard.reduce(($, row) => row.map((_, i) => [...($[i] || []), row[i]]), [])
     },
-
-    switchNumPos: function (matrix) {
+    swapNumPos: function () {
       // choose 2 nums from 1 to 9
       const [a, b] = _.sampleSize(Array.from(Array(9), (e, i)=>i+1), 2)
 
       // create new matrix with a, b switched positions
-      const newMatrix = _.cloneDeep(matrix)
+      const newMatrix = _.cloneDeep(this.ansBoard)
 
       for (let i=0; i<9; i++) {
         for (let j=0; j<9; j++) {
-          if (matrix[i][j] === a) {
+          if (this.ansBoard[i][j] === a) {
             newMatrix[i][j] = b
           }
-          if (matrix[i][j] === b) {
+          if (this.ansBoard[i][j] === b) {
             newMatrix[i][j] = a
           }
         }
       }
-      console.log(a, b)
-      return newMatrix
+      console.log(`swap positions of ${a} and ${b}`)
+      this.ansBoard = newMatrix
+    },
+    rotateClockwise: function () {
+      const newMatrix = []
+      for(let i = 0; i < this.ansBoard[0].length; i++) {
+          let row = this.ansBoard.map(e => e[i]).reverse()
+          newMatrix.push(row)
+      }
+      console.log('rotateClockwise')
+      this.ansBoard = newMatrix
+    },
+    switchRowsInBlock: function () {
+      const block = _.sample([0, 3, 6])
+      const [a, b] = _.sampleSize([block, block+1, block+2], 2)
+      console.log(`change rows ${a} and ${b}`)
+
+      const rowA = this.ansBoard[a]
+      const rowB = this.ansBoard[b]
+
+      const newMatrix = _.cloneDeep(this.ansBoard)
+
+      newMatrix[a] = rowB
+      newMatrix[b] = rowA
+      this.ansBoard = newMatrix
     }
   },
 }
