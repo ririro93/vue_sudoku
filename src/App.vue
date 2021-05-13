@@ -192,14 +192,14 @@ export default {
       console.log(this.ansBoard)
     },
     chooseSquaresToReveal: function () {
-      // Easy: 30, Medium: 25, Hard: 20
+      // Easy: 35, Medium: 25, Hard: 20
       const candidateSquares = Array.from(Array(81), (e, i) => i)
       let numOfSquaresToReveal
 
       if (this.difficulty === 'Easy') {
-        numOfSquaresToReveal = 80
+        numOfSquaresToReveal = 35
       } else if (this.difficulty === 'Medium') {
-        numOfSquaresToReveal = 25
+        numOfSquaresToReveal = 27
       } else {
         numOfSquaresToReveal = 20
       }
